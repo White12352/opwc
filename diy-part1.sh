@@ -14,5 +14,15 @@
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 
 # Add a feed source
-#echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
+echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
+# AdGuardHome Beta - Fix build with go17.x
+#pushd feeds/adguardhome
+#adguardhome_version=`curl -s "https://api.github.com/repos/AdguardTeam/AdGuardHome/releases" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g' | awk -F "v" '{print $2}'`
+#sed -ri "s/(PKG_VERSION:=)[^\"]*/\1$adguardhome_version/" net/adguardhome/Makefile
+#sed -i 's/release/beta/g' net/adguardhome/Makefile
+#sed -i 's/.*PKG_MIRROR_HASH.*/#&/' net/adguardhome/Makefile
+#sed -i '/init/d' net/adguardhome/Makefile
+#popd
+./scripts/feeds update -a
+./scripts/feeds install -a
